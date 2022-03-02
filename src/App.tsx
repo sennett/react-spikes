@@ -1,26 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import './App.css'
+import { InjectingHooks } from './injectingHooks/InjectingHooks'
+import { FlexReactSelect } from './FlexReactSelect'
+import { of } from 'rxjs'
+import { map, mergeMap } from 'rxjs/operators'
+
+const stream = of(1).pipe(mergeMap(() => fetch('https://asdsDFASDFGASDF')))
+stream.subscribe(
+  (v) => console.log(v),
+  (e) => console.warn(e),
+)
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Injecting hooks</h1>
+      <InjectingHooks />
+      <h1>Flex react select</h1>
+      <FlexReactSelect />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
