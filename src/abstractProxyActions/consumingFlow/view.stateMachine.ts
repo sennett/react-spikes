@@ -25,7 +25,6 @@ type Action =
     }
   | {
       kind: ActionKinds.SetProxyAddress
-      proxyAddress: string
     }
   | {
       kind: ActionKinds.ConfirmTransaction

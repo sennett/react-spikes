@@ -17,7 +17,7 @@ describe('ViewStateMachine', () => {
   it('moves to AwaitingTransactionConfirmation after setting proxy address', () => {
     const sm = new ViewStateMachine()
     sm.transition({ kind: ActionKinds.SetDeposit })
-    sm.transition({ kind: ActionKinds.SetProxyAddress, proxyAddress: '0x proxy address' })
+    sm.transition({ kind: ActionKinds.SetProxyAddress })
     const state = sm.getState()
     expect(state.state).toEqual(States.AwaitingTransactionConfirmation)
   })
@@ -25,7 +25,7 @@ describe('ViewStateMachine', () => {
   it('moves to TransactionConfirmed after confirming transaction', () => {
     const sm = new ViewStateMachine()
     sm.transition({ kind: ActionKinds.SetDeposit })
-    sm.transition({ kind: ActionKinds.SetProxyAddress, proxyAddress: '0x proxy address' })
+    sm.transition({ kind: ActionKinds.SetProxyAddress })
     sm.transition({ kind: ActionKinds.ConfirmTransaction })
     const state = sm.getState()
     expect(state.state).toEqual(States.TransactionConfirmed)

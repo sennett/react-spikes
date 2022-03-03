@@ -1,8 +1,10 @@
-export function EnterAmount(props: {
+type EnterAmountProps = {
   depositAmountUpdated: (depositAmount: number | undefined) => void
   depositAmountConfirmed: () => void
   depositAmount?: number
-}) {
+}
+
+export function EnterAmount(props: EnterAmountProps) {
   return (
     <>
       <input

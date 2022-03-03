@@ -14,6 +14,7 @@ type ViewModel = {
   confirmDepositAmount: () => void
   depositAmount?: number
   viewStage: ViewStates
+  setProxyAddress: (address: string) => void
 }
 
 export function useOpenVaultViewFacade(): ViewModel | undefined {
@@ -34,5 +35,12 @@ export function useOpenVaultViewFacade(): ViewModel | undefined {
     confirmDepositAmount: () => viewStateMachine.transition({ kind: VsActionKinds.SetDeposit }),
     viewStage: viewState.state,
     depositAmount: bizState.depositAmount,
+    setProxyAddress: (address: string) => {
+      businesLogicStateMachine.transition({
+        kind: BlActionKinds.ProvideProxyAddress,
+        proxyAddress: address,
+      })
+      viewStateMachine.transition({ kind: VsActionKinds.SetProxyAddress })
+    },
   }
 }
