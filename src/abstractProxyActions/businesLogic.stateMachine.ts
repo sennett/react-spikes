@@ -1,4 +1,5 @@
 import { action } from '@datorama/akita'
+import { BehaviorSubject, Observable } from 'rxjs'
 
 export enum States {
   AwaitingInput = 'AwaitingInput',
@@ -22,7 +23,7 @@ export enum WaitFor {
 export type Action =
   | {
       kind: ActionKinds.DepositAmount
-      amount: number
+      amount?: number
     }
   | {
       kind: ActionKinds.ProvideProxyAddress
@@ -56,7 +57,9 @@ export class BusinesLogicStateMachine implements IFlowStateMachine {
     waitingFor: [WaitFor.ProxyAddress, WaitFor.ConversionRate, WaitFor.DepositAmount],
   }
 
-  private validateTransition(to: Action) {
+  private state$: BehaviorSubject<State> = new BehaviorSubject<State>(this.state)
+
+  private validateTransition(action: Action) {
     const validTransitions = [
       {
         fromStates: [States.AwaitingInput],
@@ -79,7 +82,7 @@ export class BusinesLogicStateMachine implements IFlowStateMachine {
 
     let validTransition = validTransitions.find(
       ({ fromStates, allowedActions }) =>
-        fromStates.includes(this.state.state) && allowedActions.includes(to.kind),
+        fromStates.includes(this.state.state) && allowedActions.includes(action.kind),
     )
 
     if (!validTransition)
@@ -149,9 +152,14 @@ export class BusinesLogicStateMachine implements IFlowStateMachine {
         receivedAmount: this.state.depositAmount * this.state.conversionRate,
       }
     }
+    this.state$.next(this.state)
   }
 
   getCurrentState(): State {
     return this.state
+  }
+
+  getState$(): Observable<State> {
+    return this.state$
   }
 }
