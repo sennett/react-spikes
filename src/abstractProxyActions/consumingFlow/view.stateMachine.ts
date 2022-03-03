@@ -34,6 +34,7 @@ type Action =
 interface IViewStateMachine {
   transition(action: Action): void
   getState(): ViewState
+  getState$(): Observable<ViewState>
 }
 
 export class ViewStateMachine implements IViewStateMachine {

@@ -48,6 +48,7 @@ type State = {
 
 interface IFlowStateMachine {
   getCurrentState(): State
+  getState$(): Observable<State>
   transition(action: Action): void
 }
 
