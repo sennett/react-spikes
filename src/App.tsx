@@ -4,7 +4,7 @@ import { InjectingHooks } from './injectingHooks/InjectingHooks'
 import { FlexReactSelect } from './FlexReactSelect'
 import { of } from 'rxjs'
 import { map, mergeMap } from 'rxjs/operators'
-import { OpenVault } from './abstractProxyActions/consumingFlow/OpenVault'
+import { OpenVault } from './stateMachineExperiment/OpenVault'
 
 function App() {
   return (

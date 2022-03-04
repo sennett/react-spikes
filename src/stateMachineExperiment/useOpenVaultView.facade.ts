@@ -8,7 +8,7 @@ import {
   States as ViewStates,
   ViewStateMachine,
 } from './view.stateMachine'
-import { useObservable } from '../helpers/useObservable'
+import { useObservable } from './helpers/useObservable'
 import { firstValueFrom, interval, mapTo } from 'rxjs'
 import { map } from 'rxjs/operators'
 
