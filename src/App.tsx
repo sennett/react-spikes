@@ -13,7 +13,7 @@ function App() {
       {/*<InjectingHooks />*/}
       {/*<h1>Flex react select</h1>*/}
       {/*<FlexReactSelect />*/}
-      <h1>Proxy actions provider</h1>
+      <h1>State machine experiment</h1>
       <OpenVault />
     </div>
   )
