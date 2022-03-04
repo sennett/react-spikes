@@ -1,5 +1,4 @@
 import {
-  ActionKinds,
   ActionKinds as BlActionKinds,
   BusinesLogicStateMachine,
   WaitFor,
@@ -15,12 +14,16 @@ import { map } from 'rxjs/operators'
 
 const businesLogicStateMachine = new BusinesLogicStateMachine()
 const viewStateMachine = new ViewStateMachine()
+businesLogicStateMachine.confirmed$().subscribe({
+  next: (confirmed) =>
+    confirmed && viewStateMachine.transition({ kind: VsActionKinds.ConfirmTransaction }),
+})
 
 const conversionRateStream = interval(1000).pipe(map((v: number) => (v % 2 === 0 ? 0.5 : 1.5)))
 
 conversionRateStream.subscribe((v) =>
   businesLogicStateMachine.transition({
-    kind: ActionKinds.UpdateConversionRate,
+    kind: BlActionKinds.UpdateConversionRate,
     conversionRate: v,
   }),
 )
@@ -42,6 +45,7 @@ export function useOpenVaultViewFacade(): ViewModel | undefined {
   const viewState = useObservable(viewStateMachine.getState$())
   const bizState = useObservable(businesLogicStateMachine.getState$())
   const confirmable = useObservable(businesLogicStateMachine.confirmable$())
+  const confirmed = useObservable(businesLogicStateMachine.confirmed$())
 
   if (!viewState || !bizState) {
     return undefined
@@ -70,7 +74,7 @@ export function useOpenVaultViewFacade(): ViewModel | undefined {
     canConfirm: confirmable || false,
     confirmTransaction: () => {
       businesLogicStateMachine.transition({
-        kind: ActionKinds.ConfirmTransaction,
+        kind: BlActionKinds.ConfirmTransaction,
         apply: (state) => firstValueFrom(interval(1000).pipe(mapTo(undefined))),
       })
     },

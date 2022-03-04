@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs'
+import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export enum States {
@@ -230,6 +230,16 @@ export class BusinesLogicStateMachine implements IFlowStateMachine {
   }
 
   confirmable$(): Observable<boolean> {
-    return this.state$.pipe(map((s) => s.state === States.Confirmable))
+    return this.state$.pipe(
+      map((s) => s.state === States.Confirmable),
+      distinctUntilChanged(),
+    )
+  }
+
+  confirmed$(): Observable<boolean> {
+    return this.state$.pipe(
+      map((s) => s.state === States.TransactionConfirmed),
+      distinctUntilChanged(),
+    )
   }
 }
