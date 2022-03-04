@@ -2,6 +2,7 @@ type EnterAmountProps = {
   depositAmountUpdated: (depositAmount: number | undefined) => void
   depositAmountConfirmed: () => void
   depositAmount?: number
+  canConfirmDepositAmount: boolean
 }
 
 export function EnterAmount(props: EnterAmountProps) {
@@ -18,7 +19,7 @@ export function EnterAmount(props: EnterAmountProps) {
           }
         }}
       />
-      <button disabled={props.depositAmount === undefined} onClick={props.depositAmountConfirmed}>
+      <button disabled={!props.canConfirmDepositAmount} onClick={props.depositAmountConfirmed}>
         {props.depositAmount === undefined ? 'Deposit amount required' : 'Confirm deposit amount'}
       </button>
     </>

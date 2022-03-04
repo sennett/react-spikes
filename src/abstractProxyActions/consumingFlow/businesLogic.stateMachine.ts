@@ -1,8 +1,9 @@
-import { action } from '@datorama/akita'
 import { BehaviorSubject, Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 export enum States {
-  AwaitingInput = 'AwaitingInput',
+  NotConfirmable = 'NotConfirmable',
+  Confirmable = 'Confirmable',
   TransactionPending = 'TransactionPending',
   TransactionConfirmed = 'TransactionConfirmed',
 }
@@ -31,6 +32,7 @@ export type Action =
     }
   | {
       kind: ActionKinds.ConfirmTransaction
+      apply: (state: State) => Promise<void>
     }
   | {
       kind: ActionKinds.UpdateConversionRate
@@ -54,7 +56,7 @@ interface IFlowStateMachine {
 
 export class BusinesLogicStateMachine implements IFlowStateMachine {
   private state: State = {
-    state: States.AwaitingInput,
+    state: States.NotConfirmable,
     waitingFor: [WaitFor.ProxyAddress, WaitFor.ConversionRate, WaitFor.DepositAmount],
   }
 
@@ -63,11 +65,20 @@ export class BusinesLogicStateMachine implements IFlowStateMachine {
   private validateTransition(action: Action) {
     const validTransitions = [
       {
-        fromStates: [States.AwaitingInput],
+        fromStates: [States.NotConfirmable],
         allowedActions: [
           ActionKinds.DepositAmount,
           ActionKinds.ProvideProxyAddress,
           ActionKinds.UpdateConversionRate,
+        ],
+      },
+      {
+        fromStates: [States.Confirmable],
+        allowedActions: [
+          ActionKinds.DepositAmount,
+          ActionKinds.ProvideProxyAddress,
+          ActionKinds.UpdateConversionRate,
+          ActionKinds.ConfirmTransaction,
         ],
       },
       {
@@ -76,7 +87,14 @@ export class BusinesLogicStateMachine implements IFlowStateMachine {
           ActionKinds.DepositAmount,
           ActionKinds.ProvideProxyAddress,
           ActionKinds.UpdateConversionRate,
-          ActionKinds.ConfirmTransaction,
+        ],
+      },
+      {
+        fromStates: [States.TransactionConfirmed],
+        allowedActions: [
+          ActionKinds.DepositAmount,
+          ActionKinds.ProvideProxyAddress,
+          ActionKinds.UpdateConversionRate,
         ],
       },
     ]
@@ -90,9 +108,11 @@ export class BusinesLogicStateMachine implements IFlowStateMachine {
       throw new Error(`invalid state transition.  from: ${this.state.state}, action: ${action}`)
   }
 
-  transition(action: Action) {
-    this.validateTransition(action)
+  private exitTransition(): void {
+    this.state$.next(this.state)
+  }
 
+  private updateStateValues(action: Action) {
     switch (action.kind) {
       case ActionKinds.DepositAmount:
         this.state = {
@@ -112,18 +132,19 @@ export class BusinesLogicStateMachine implements IFlowStateMachine {
           conversionRate: action.conversionRate,
         }
         break
-      case ActionKinds.ConfirmTransaction:
-        this.state = {
-          ...this.state,
-          state: States.TransactionConfirmed,
-        }
-        break
-      default:
-        throw new Error('unrecognised transition')
     }
 
+    if (this.state.depositAmount && this.state.conversionRate) {
+      this.state = {
+        ...this.state,
+        receivedAmount: this.state.depositAmount * this.state.conversionRate,
+      }
+    }
+  }
+
+  private updateWaitingFor() {
     this.state.waitingFor = []
-    if (!this.state.depositAmount) {
+    if (!this.state.depositAmount || this.state.depositAmount < 100) {
       this.state.waitingFor.push(WaitFor.DepositAmount)
     }
 
@@ -134,26 +155,70 @@ export class BusinesLogicStateMachine implements IFlowStateMachine {
     if (!this.state.conversionRate) {
       this.state.waitingFor.push(WaitFor.ConversionRate)
     }
+  }
 
+  private tryMakeConfirmable() {
     if (
       this.state.depositAmount &&
+      this.state.depositAmount >= 100 &&
       this.state.proxyAddress &&
-      this.state.conversionRate &&
-      action.kind !== ActionKinds.ConfirmTransaction
+      this.state.receivedAmount &&
+      this.state.receivedAmount >= 100
     ) {
       this.state = {
         ...this.state,
-        state: States.TransactionPending,
+        state: States.Confirmable,
+      }
+    } else {
+      this.state = {
+        ...this.state,
+        state: States.NotConfirmable,
+      }
+    }
+  }
+
+  private checkForIgnoredTransitions(): boolean {
+    return (
+      this.state.state === States.TransactionPending ||
+      this.state.state === States.TransactionConfirmed
+    )
+  }
+
+  async transition(action: Action) {
+    this.validateTransition(action)
+
+    const ignoreTransition = this.checkForIgnoredTransitions()
+
+    if (ignoreTransition) {
+      return
+    }
+
+    this.updateStateValues(action)
+
+    this.updateWaitingFor()
+
+    this.tryMakeConfirmable()
+
+    if (action.kind === ActionKinds.ConfirmTransaction) {
+      try {
+        this.state = {
+          ...this.state,
+          state: States.TransactionPending,
+        }
+        await action.apply(this.state)
+        this.state = {
+          ...this.state,
+          state: States.TransactionConfirmed,
+        }
+      } catch (e) {
+        this.state = {
+          ...this.state,
+          state: States.Confirmable,
+        }
       }
     }
 
-    if (this.state.depositAmount && this.state.conversionRate) {
-      this.state = {
-        ...this.state,
-        receivedAmount: this.state.depositAmount * this.state.conversionRate,
-      }
-    }
-    this.state$.next(this.state)
+    this.exitTransition()
   }
 
   getCurrentState(): State {
@@ -162,5 +227,9 @@ export class BusinesLogicStateMachine implements IFlowStateMachine {
 
   getState$(): Observable<State> {
     return this.state$
+  }
+
+  confirmable$(): Observable<boolean> {
+    return this.state$.pipe(map((s) => s.state === States.Confirmable))
   }
 }
