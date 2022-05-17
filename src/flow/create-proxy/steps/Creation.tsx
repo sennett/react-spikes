@@ -9,6 +9,7 @@ export type CreationProps = {
 
 export function Creation(props: GenericStepProps<CreationProps>) {
   const dots = useLoadingDots()
+
   useEffect(() => {
     console.log('sending request....')
     setTimeout(() => {
@@ -17,6 +18,7 @@ export function Creation(props: GenericStepProps<CreationProps>) {
       props.next!()
     }, 3000)
   }, [])
+
   return (
     <>
       Creating proxy...
