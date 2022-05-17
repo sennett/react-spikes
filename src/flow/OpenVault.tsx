@@ -4,6 +4,7 @@ import { SimulateStep, SimulateStepProps } from './steps/SimulateStep'
 import { CreateProxy, CreateProxyProps } from './create-proxy/CreateProxy'
 import { Confirmation, ConfirmationProps } from './steps/Confirmation'
 import { Complete, CompleteProps } from './steps/Complete'
+import { Allowance } from './allowance/Allowance'
 
 type OpenVaultType = SimulateStepProps & CreateProxyProps & ConfirmationProps & CompleteProps
 
@@ -32,7 +33,7 @@ export function OpenVault() {
   return (
     <Flow<OpenVaultType>
       name="open vault"
-      steps={[SimulateStep, CreateProxy, Confirmation, Complete]}
+      steps={[SimulateStep, CreateProxy, Allowance, Confirmation, Complete]}
       {...viewState}
       updateState={(newState) =>
         setViewState((oldState) => calculateViewModal({ ...oldState, ...newState }))
