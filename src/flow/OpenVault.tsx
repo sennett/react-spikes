@@ -1,7 +1,7 @@
 import { Flow } from './Flow'
 import { useEffect, useState } from 'react'
 import { SimulateStep, SimulateStepProps } from './steps/SimulateStep'
-import { CreateProxy, CreateProxyProps } from './CreateProxy'
+import { CreateProxy, CreateProxyProps } from './create-proxy/CreateProxy'
 import { Confirmation, ConfirmationProps } from './steps/Confirmation'
 import { Complete, CompleteProps } from './steps/Complete'
 
@@ -20,17 +20,19 @@ export function OpenVault() {
     walletAddress: '0xWalletAddress',
   })
 
-  useEffect(() => {
-    const i = setInterval(() => {
-      setViewState((oldState) => {
-        return calculateViewModal({ ...oldState, ethPrice: Math.floor(Math.random() * 10000) })
-      })
-    }, 1000)
-    return () => clearInterval(i)
-  })
+  // useEffect(() => {
+  //   const i = setInterval(() => {
+  //     setViewState((oldState) => {
+  //       return calculateViewModal({ ...oldState, ethPrice: Math.floor(Math.random() * 10000) })
+  //     })
+  //   }, 1000)
+  //   return () => clearInterval(i)
+  // })
 
+  console.log('rendering app')
   return (
     <Flow<OpenVaultType>
+      name="open vault"
       steps={[SimulateStep, CreateProxy, Confirmation, Complete]}
       {...viewState}
       updateState={(newState) =>

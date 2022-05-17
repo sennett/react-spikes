@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, FC } from 'react'
 
 export type GenericStepProps<S> = {
   next?: () => void
@@ -7,29 +7,37 @@ export type GenericStepProps<S> = {
 } & S
 
 export function Flow<S>(
-  props: { steps: Array<React.FC<GenericStepProps<S>>> } & {
+  props: { steps: Array<FC<GenericStepProps<S>>> } & {
     updateState: (state: Partial<S>) => void
+    next?: () => void
+    previous?: () => void
+    name: string
   } & S,
 ) {
+  const parentPrevious = props.previous
+  const parentNext = props.next
+
   const [currentStep, setCurrentStep] = useState(0)
 
-  function next() {
-    setCurrentStep((currentStep) => currentStep + 1)
-  }
+  const next =
+    currentStep < props.steps.length - 1
+      ? () => setCurrentStep((currentStep) => currentStep + 1)
+      : parentNext
+      ? parentNext
+      : undefined
 
-  function previous() {
-    setCurrentStep((currentStep) => currentStep - 1)
-  }
+  const previous =
+    currentStep > 0
+      ? () => setCurrentStep((currentStep) => currentStep - 1)
+      : parentPrevious
+      ? parentPrevious
+      : undefined
 
   const CurrentStep = props.steps[currentStep]
 
   return (
     <>
-      <CurrentStep
-        {...props}
-        next={currentStep < props.steps.length - 1 ? next : undefined}
-        previous={currentStep > 0 ? previous : undefined}
-      />
+      <CurrentStep {...props} next={next} previous={previous} />
     </>
   )
 }
