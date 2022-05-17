@@ -1,5 +1,5 @@
 import { GenericStepProps } from '../../Flow'
-import { useState } from 'react'
+import { ChangeEvent, MouseEventHandler, SyntheticEvent, useState } from 'react'
 import { useLoadingDots } from '../../useLoadingDots'
 
 export type ConfigureAllowanceAmountProps = {
@@ -12,6 +12,7 @@ type AllowanceRequestState = 'not sent' | 'in progress' | 'done'
 export function ConfigureAllowanceAmount(props: GenericStepProps<ConfigureAllowanceAmountProps>) {
   const [allowanceRequestState, setAllowanceRequestState] =
     useState<AllowanceRequestState>('not sent')
+  const [selectedRadio, setSelectedRadio] = useState('custom')
   const dots = useLoadingDots()
 
   const canProgress =
@@ -25,18 +26,61 @@ export function ConfigureAllowanceAmount(props: GenericStepProps<ConfigureAllowa
     setTimeout(() => props.next!(), 1000)
   }
 
+  function updateRadio(e: SyntheticEvent<HTMLInputElement>) {
+    const allowanceRadio = e.currentTarget.value
+    setSelectedRadio(e.currentTarget.value)
+    if (allowanceRadio === 'minimum') {
+      props.updateState({ configuredAllowance: props.depositAmount })
+    } else if (allowanceRadio === 'unlimited') {
+      props.updateState({ configuredAllowance: Infinity })
+    }
+  }
+
   return (
     <>
       Configure proxy amount
       <br />
       <input
+        type="radio"
+        name="allowanceType"
+        value="custom"
+        checked={selectedRadio === 'custom'}
+        onChange={updateRadio}
+      />
+      custom
+      <input
+        disabled={selectedRadio !== 'custom'}
         value={props.configuredAllowance || ''}
         onChange={(e) => props.updateState({ configuredAllowance: parseInt(e.target.value) })}
       />
       <br />
+      <input
+        type="radio"
+        name="allowanceType"
+        value="minimum"
+        checked={selectedRadio === 'minimum'}
+        onChange={updateRadio}
+      />
+      minimum
+      <br />
+      <input
+        type="radio"
+        name="allowanceType"
+        value="unlimited"
+        checked={selectedRadio === 'unlimited'}
+        onChange={updateRadio}
+      />
+      infinite
+      <br />
       {allowanceRequestState === 'in progress' && (
         <>
           {dots}
+          <br />
+        </>
+      )}
+      {!canProgress && (
+        <>
+          allowance not enough
           <br />
         </>
       )}
