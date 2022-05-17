@@ -38,7 +38,7 @@ export function ConfigureAllowanceAmount(props: GenericStepProps<ConfigureAllowa
 
   return (
     <>
-      Configure proxy amount
+      Configure proxy allowance
       <br />
       <input
         type="radio"
@@ -84,6 +84,7 @@ export function ConfigureAllowanceAmount(props: GenericStepProps<ConfigureAllowa
           <br />
         </>
       )}
+      <button onClick={props.previous}>back</button>
       <button disabled={!canProgress} onClick={setAllowance}>
         set allowance
       </button>
