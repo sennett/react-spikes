@@ -1,10 +1,6 @@
 import React from 'react'
 import './App.css'
-import { InjectingHooks } from './injectingHooks/InjectingHooks'
-import { FlexReactSelect } from './FlexReactSelect'
-import { of } from 'rxjs'
-import { map, mergeMap } from 'rxjs/operators'
-import { OpenVault } from './stateMachineExperiment/OpenVault'
+import { OpenVault } from './flow/OpenVault'
 
 function App() {
   return (
@@ -13,7 +9,11 @@ function App() {
       {/*<InjectingHooks />*/}
       {/*<h1>Flex react select</h1>*/}
       {/*<FlexReactSelect />*/}
-      <h1>State machine experiment</h1>
+      {/*<h1>State machine experiment</h1>*/}
+      {/*<OpenVault />*/}
+      {/*<h1>james riff experiment</h1>*/}
+      {/*<JamesRiffExperiment />*/}
+      <h1>Flow</h1>
       <OpenVault />
     </div>
   )
