@@ -1,14 +1,36 @@
-import { useState } from 'react'
+import { Flow, GenericStepProps } from './Flow'
+import { useEffect, useState } from 'react'
 
-export type GenericStepProps = {
-  next?: () => void
-  previous?: () => void
+type OpenVaultType = SimulateStepProps & CreateProxyProps
+
+type SimulateStepProps = {
+  ethPrice: number
+  depositAmount?: number
+  depositAmountUsd?: number
 }
 
-function Step1(props: GenericStepProps) {
+function SimulateStep(props: GenericStepProps<SimulateStepProps>) {
   return (
     <>
-      step 1<br />
+      Simulate vault
+      <br />
+      Eth price: {props.ethPrice}
+      <br />
+      Deposit amount:{' '}
+      <input
+        onChange={(event) =>
+          props.updateState({
+            ...props,
+            depositAmount: event.target.value ? parseFloat(event.target.value) : undefined,
+          })
+        }
+      />
+      {props.depositAmountUsd && (
+        <>
+          <br />({props.depositAmountUsd} USD)
+        </>
+      )}
+      <br />
       <button disabled={!props.previous} onClick={props.previous}>
         previous
       </button>
@@ -19,10 +41,21 @@ function Step1(props: GenericStepProps) {
   )
 }
 
-function Step2(props: GenericStepProps) {
+type CreateProxyProps = {
+  walletAddress: string
+  depositAmountUsd?: number
+}
+
+function CreateProxy(props: GenericStepProps<CreateProxyProps>) {
   return (
     <>
-      step 2<br />
+      Create proxy
+      <br />
+      {props.depositAmountUsd && (
+        <>
+          <br />({props.depositAmountUsd} USD)
+        </>
+      )}
       <button disabled={!props.previous} onClick={props.previous}>
         previous
       </button>
@@ -33,26 +66,35 @@ function Step2(props: GenericStepProps) {
   )
 }
 
-export function Flow(props: { steps: Array<React.FC<GenericStepProps>> }) {
-  const [currentStep, setCurrentStep] = useState(0)
-  function next() {
-    setCurrentStep((currentStep) => currentStep + 1)
+function calculateViewModal(state: OpenVaultType): OpenVaultType {
+  return {
+    ...state,
+    depositAmountUsd: state.depositAmount && state.depositAmount * state.ethPrice,
   }
-
-  function previous() {
-    setCurrentStep((currentStep) => currentStep - 1)
-  }
-
-  return (
-    <>
-      {props.steps[currentStep]({
-        next: currentStep < props.steps.length - 1 ? next : undefined,
-        previous: currentStep > 0 ? previous : undefined,
-      })}
-    </>
-  )
 }
 
 export function OpenVault() {
-  return <Flow steps={[Step1, Step2]} />
+  const [viewState, setViewState] = useState<OpenVaultType>({
+    ethPrice: 2000,
+    walletAddress: 'wallet address',
+  })
+
+  useEffect(() => {
+    const i = setInterval(() => {
+      setViewState((oldState) => {
+        return calculateViewModal({ ...oldState, ethPrice: Math.random() * 10000 })
+      })
+    }, 1000)
+    return () => clearInterval(i)
+  })
+
+  return (
+    <Flow<OpenVaultType>
+      steps={[SimulateStep, CreateProxy]}
+      {...viewState}
+      updateState={(newState) =>
+        setViewState((oldState) => calculateViewModal({ ...oldState, ...newState }))
+      }
+    />
+  )
 }
