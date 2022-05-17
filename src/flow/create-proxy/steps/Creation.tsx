@@ -11,9 +11,7 @@ export function Creation(props: GenericStepProps<CreationProps>) {
   const dots = useLoadingDots()
 
   useEffect(() => {
-    console.log('sending request....')
     setTimeout(() => {
-      console.log('request complete')
       props.updateState({ proxyAddress: '0xProxyAddress' })
       props.next!()
     }, 3000)

@@ -20,16 +20,15 @@ export function OpenVault() {
     walletAddress: '0xWalletAddress',
   })
 
-  // useEffect(() => {
-  //   const i = setInterval(() => {
-  //     setViewState((oldState) => {
-  //       return calculateViewModal({ ...oldState, ethPrice: Math.floor(Math.random() * 10000) })
-  //     })
-  //   }, 1000)
-  //   return () => clearInterval(i)
-  // })
+  useEffect(() => {
+    const i = setInterval(() => {
+      setViewState((oldState) => {
+        return calculateViewModal({ ...oldState, ethPrice: Math.floor(Math.random() * 10000) })
+      })
+    }, 1000)
+    return () => clearInterval(i)
+  })
 
-  console.log('rendering app')
   return (
     <Flow<OpenVaultType>
       name="open vault"
