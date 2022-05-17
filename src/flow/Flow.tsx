@@ -21,14 +21,15 @@ export function Flow<S>(
     setCurrentStep((currentStep) => currentStep - 1)
   }
 
+  const CurrentStep = props.steps[currentStep]
+
   return (
     <>
-      {props.steps[currentStep]({
-        ...props,
-        updateState: props.updateState,
-        next: currentStep < props.steps.length - 1 ? next : undefined,
-        previous: currentStep > 0 ? previous : undefined,
-      })}
+      <CurrentStep
+        {...props}
+        next={currentStep < props.steps.length - 1 ? next : undefined}
+        previous={currentStep > 0 ? previous : undefined}
+      />
     </>
   )
 }
