@@ -28,6 +28,12 @@ Advantages
 - Easy to read steps order.
 - Steps order is not in pipes - smaller pipes.
 
+Disdavantages
+---
+
+- slightly awkward state mapping in to children wizards
+- setting state from props seems a little weird
+
 Improvements
 ---
 
