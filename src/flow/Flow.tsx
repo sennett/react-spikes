@@ -23,25 +23,27 @@ export function Flow<S>(
   const [currentStep, setCurrentStep] = useState(0)
   const [direction, setDirection] = useState<Direction>('forwards')
 
-  const next =
-    currentStep < props.steps.length - 1
-      ? () => {
-          setDirection('forwards')
-          setCurrentStep((currentStep) => currentStep + 1)
-        }
-      : parentNext
-      ? parentNext
-      : undefined
+  const isNestedFlow = parentPrevious || parentNext
+  const canProgress = currentStep < props.steps.length - 1
+  const canRegress = currentStep > 0
 
-  const previous =
-    currentStep > 0
-      ? () => {
-          setDirection('backwards')
-          setCurrentStep((currentStep) => currentStep - 1)
-        }
-      : parentPrevious
-      ? parentPrevious
-      : undefined
+  const next = canProgress
+    ? () => {
+        setDirection('forwards')
+        setCurrentStep((currentStep) => currentStep + 1)
+      }
+    : isNestedFlow
+    ? parentNext
+    : undefined
+
+  const previous = canRegress
+    ? () => {
+        setDirection('backwards')
+        setCurrentStep((currentStep) => currentStep - 1)
+      }
+    : isNestedFlow
+    ? parentPrevious
+    : undefined
 
   const skip = direction === 'forwards' ? next : previous
 
