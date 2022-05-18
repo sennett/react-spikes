@@ -1,6 +1,6 @@
 import { GenericStepProps } from '../../Flow'
 import { SyntheticEvent, useState } from 'react'
-import { useLoadingDots } from '../../useLoadingDots'
+import { useLoadingDots } from '../../hooks/useLoadingDots'
 
 export type ConfigureAllowanceAmountProps = {
   depositAmount?: number

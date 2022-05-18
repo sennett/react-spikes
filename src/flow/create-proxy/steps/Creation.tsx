@@ -1,6 +1,6 @@
 import { GenericStepProps } from '../../Flow'
 import { useEffect } from 'react'
-import { useLoadingDots } from '../../useLoadingDots'
+import { useLoadingDots } from '../../hooks/useLoadingDots'
 
 export type CreationProps = {
   walletAddress: string
