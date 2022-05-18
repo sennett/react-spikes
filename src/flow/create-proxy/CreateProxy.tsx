@@ -1,17 +1,19 @@
 import { Flow, GenericStepProps } from '../Flow'
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import { Explanation, ExplanationProps } from './steps/Explanation'
 import { Creation, CreationProps } from './steps/Creation'
 import { Done, DoneProps } from './steps/Done'
-import { useSkip } from '../hooks/useSkip'
 
 export type CreateProxyProps = ExplanationProps & CreationProps & DoneProps
 
-export function CreateProxy(props: GenericStepProps<CreateProxyProps>) {
-  const loading = useSkip(props.skip, [props.proxyAddress])
-  const [viewState, setViewState] = useState<CreateProxyProps>(props)
+export type Step<P> = {
+  canSkip?: (props: GenericStepProps<P>) => boolean
+}
 
-  if (loading) return <></>
+export const CreateProxy: FC<GenericStepProps<CreateProxyProps>> & Step<CreateProxyProps> = (
+  props,
+) => {
+  const [viewState, setViewState] = useState<CreateProxyProps>(props)
 
   return (
     <Flow<CreateProxyProps>
@@ -25,3 +27,5 @@ export function CreateProxy(props: GenericStepProps<CreateProxyProps>) {
     />
   )
 }
+
+CreateProxy.canSkip = (props: GenericStepProps<CreateProxyProps>) => !!props.proxyAddress

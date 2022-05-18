@@ -1,4 +1,5 @@
 import { useState, FC } from 'react'
+import { Step } from './create-proxy/CreateProxy'
 
 export type GenericStepProps<S> = {
   next?: () => void
@@ -10,7 +11,7 @@ export type GenericStepProps<S> = {
 type Direction = 'forwards' | 'backwards'
 
 export function Flow<S>(
-  props: { steps: Array<FC<GenericStepProps<S>>> } & {
+  props: { steps: Array<FC<GenericStepProps<S>> & Step<GenericStepProps<S>>> } & {
     updateState: (state: Partial<S>) => void
     next?: () => void
     previous?: () => void
@@ -48,10 +49,17 @@ export function Flow<S>(
   const skip = direction === 'forwards' ? next : previous
 
   const CurrentStep = props.steps[currentStep]
+  const canSkip = !!CurrentStep?.canSkip && skip
 
   return (
     <>
-      <CurrentStep {...props} next={next} previous={previous} skip={skip} />
+      {canSkip && CurrentStep.canSkip!(props) ? (
+        skip()
+      ) : (
+        <div style={{ visibility: canSkip ? 'hidden' : 'visible' }}>
+          <CurrentStep {...props} next={next} previous={previous} skip={skip} />
+        </div>
+      )}
     </>
   )
 }
