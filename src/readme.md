@@ -9,6 +9,7 @@ Overview
   - `Step`s control when they move on, not `Flow`.
   - If a step is complete (i.e. proxy/allowance), it can call `props.skip!()` inside `useEffect` to cause `Flow` to skip the step and go the next one.
   - They can handle their own IO, validation and side effects
+  - They can call `props.updateState(s: T)` to update the global state.
   - `Step` can also render `Flow` - i.e. wizards can be nested.
 - Data state (not display state) is the intersection of all props handled by the handled by the parent component of `Flow`.
   - i.e `type OpenBorrowVaultType = SimulateStepProps & CreateProxyProps & ConfirmationProps & CompleteProps`
