@@ -22,10 +22,12 @@ Potential improvements
   - A hook/wrapper component that hides things until after useEffect has run.  Probably `skip` would be a custom hook at this point.  Could this be inside `Flow` rather than each step?
 - Typesafety between `Step`s inside `Flow`.  Intersection type causes lots of nullables which need to be handled by code, and steps can be reordered without compiled time errors.  Is there some typescript solution to this?
 - State handled generically inside `Flow` rather than parent?  Unsure if this is right thing to do as state needs to update all the time from outside `Flow`.
+- Move from `setInterval` to pipes
 
 Unanswered questions
 ---
 - Do we need a central validation on the state?  Could just build validation from props and compose some common rules if necessary. Can use decorators?
+- Where do the pipes go.  Are they step specific?
 
 Unsupported things
 ---
