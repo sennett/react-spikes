@@ -43,6 +43,7 @@ Improvements
 - Typesafety between steps inside `Flow`.  Intersection type causes lots of nullables which need to be handled by code, and steps can be reordered without compiled time errors.  Is there some typescript solution to this?
 - State handled generically inside `Flow` rather than parent?  Unsure if this is right thing to do as state needs to update all the time from outside `Flow`.
 - Move from `setInterval` to pipes in these examples to see how it works.
+- jump/link to specific step
 
 Unanswered questions
 ---
@@ -51,4 +52,3 @@ Unanswered questions
 Unsupported things
 ---
 - branching - `Flow` is only linear
-- jump/link to specific step
