@@ -3,7 +3,7 @@ Overview
 
 - `Flow` component manages current displayed step, back/forward and skip.
   - It renders the current step, and can be displayed like a standard react component.
-  - Handles what happens when a `Step` calls `back`, `next`, or `skip`.
+  - Handles what happens when a step calls `back`, `next`, or `skip`.
 - Steps are just react components that receive a `GenericStepProps<T>` props arg.
   - `T` is the props relevant to the step (both what they consume and what they update).
   - Steps control when they move on, not `Flow`.
@@ -11,11 +11,11 @@ Overview
   - They can handle their own IO, validation and side effects
   - They can call `props.updateState(s: T)` to update the global state.
   - Steps can also render `Flow` - i.e. wizards can be nested.
-- Data state (not display state) is the intersection of all props handled by the handled by the parent component of `Flow`.
+- Data state (not state deciding which step to display) is the intersection of all props handled by the handled by the parent component of `Flow`.
   - i.e `type OpenBorrowVaultType = SimulateStepProps & CreateProxyProps & ConfirmationProps & CompleteProps`
 - `OpenBorrowVault` is an example of a specific user flow.
   - It consumes steps
-  - It also consumes flows `CreateProxy` and `Allowance`, which are steps and also use `Flow`
+  - It also consumes flows `CreateProxy` and `Allowance`, which are themselves steps and also use `Flow`
 - Pipes (simulated by `setInteval`)
   - Can be step-specific if necessary (for example CreateProxy step creating the proxy and reading the address)
   - Can be for the entire flow, if there is data required by multiple steps.
