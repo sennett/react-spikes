@@ -16,7 +16,6 @@ Overview
 - `OpenBorrowVault` is an example of a specific user flow.
   - It consumes steps
   - It also consumes flows `CreateProxy` and `Allowance`, which are steps and also use `Flow`
-  - It also consumes flows `CreateProxy` and `Allowance`, which are steps and also use `Flow`
 - Pipes (simulated by `setInteval`)
   - Can be step-specific if necessary (for example CreateProxy step creating the proxy and reading the address)
   - Can be for the entire flow, if there is data required by multiple steps.
