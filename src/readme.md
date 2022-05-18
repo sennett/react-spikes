@@ -21,7 +21,7 @@ Potential improvements
   - CSS to delay rendering
   - A hook/wrapper component that hides things until after useEffect has run.  Probably `skip` would be a custom hook at this point.  Could this be inside `Flow` rather than each step?
 - Typesafety between `Step`s inside `Flow`.  Intersection type causes lots of nullables which need to be handled by code, and steps can be reordered without compiled time errors.  Is there some typescript solution to this?
-- State handled generically inside `Flow` rather than parent?  Unsure if this is right thing to do as state needs to update all the time.
+- State handled generically inside `Flow` rather than parent?  Unsure if this is right thing to do as state needs to update all the time from outside `Flow`.
 
 Unanswered questions
 ---
