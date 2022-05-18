@@ -17,8 +17,19 @@ Overview
   - It consumes steps
   - It also consumes flows `CreateProxy` and `Allowance`, which are steps and also use `Flow`
   - It also consumes flows `CreateProxy` and `Allowance`, which are steps and also use `Flow`
+- Pipes (simulated by `setInteval`)
+  - Can be step-specific if necessary (for example CreateProxy step creating the proxy and reading the address)
+  - Can be for the entire flow, if there is data required by multiple steps.
 
-Potential improvements
+Advantages
+---
+
+- Composable flows reduce duplication and coupling between different user journies.
+- Isolated steps make smaller, more focused pipes.
+- Easy to read steps order.
+- Steps order is not in pipes - smaller pipes.
+
+Improvements
 ---
 
 - `useEffect` to decide when step is complete causes FOUC.  Workarounds:
@@ -26,12 +37,11 @@ Potential improvements
   - A hook/wrapper component that hides things until after useEffect has run.  Probably `skip` would be a custom hook at this point.  Could this be inside `Flow` rather than each step?
 - Typesafety between steps inside `Flow`.  Intersection type causes lots of nullables which need to be handled by code, and steps can be reordered without compiled time errors.  Is there some typescript solution to this?
 - State handled generically inside `Flow` rather than parent?  Unsure if this is right thing to do as state needs to update all the time from outside `Flow`.
-- Move from `setInterval` to pipes
+- Move from `setInterval` to pipes in these examples to see how it works.
 
 Unanswered questions
 ---
 - Do we need a central validation on the state?  Could just build validation from props and compose some common rules if necessary. Can use decorators?
-- Where do the pipes go.  Are they step specific?
 
 Unsupported things
 ---
