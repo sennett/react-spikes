@@ -6,17 +6,17 @@ import { Confirmation, ConfirmationProps } from './steps/Confirmation'
 import { Complete, CompleteProps } from './steps/Complete'
 import { Allowance } from './allowance/Allowance'
 
-type OpenVaultType = SimulateStepProps & CreateProxyProps & ConfirmationProps & CompleteProps
+type OpenBorrowVaultType = SimulateStepProps & CreateProxyProps & ConfirmationProps & CompleteProps
 
-function calculateViewModal(state: OpenVaultType): OpenVaultType {
+function calculateViewModal(state: OpenBorrowVaultType): OpenBorrowVaultType {
   return {
     ...state,
     depositAmountUsd: state.depositAmount && state.depositAmount * state.ethPrice,
   }
 }
 
-export function OpenVault() {
-  const [viewState, setViewState] = useState<OpenVaultType>({
+export function OpenBorrowVault() {
+  const [viewState, setViewState] = useState<OpenBorrowVaultType>({
     ethPrice: 2000,
     walletAddress: '0xWalletAddress',
   })
@@ -31,7 +31,7 @@ export function OpenVault() {
   })
 
   return (
-    <Flow<OpenVaultType>
+    <Flow<OpenBorrowVaultType>
       name="open vault"
       steps={[SimulateStep, CreateProxy, Allowance, Confirmation, Complete]}
       {...viewState}

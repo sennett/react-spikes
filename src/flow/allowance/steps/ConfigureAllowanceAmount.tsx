@@ -1,5 +1,5 @@
 import { GenericStepProps } from '../../Flow'
-import { ChangeEvent, MouseEventHandler, SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useState } from 'react'
 import { useLoadingDots } from '../../useLoadingDots'
 
 export type ConfigureAllowanceAmountProps = {

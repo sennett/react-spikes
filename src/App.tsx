@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './App.css'
-import { OpenVault } from './flow/OpenVault'
+import { OpenBorrowVault } from './flow/OpenBorrowVault'
 import { Flow, GenericStepProps } from './flow/Flow'
 
 type Step1Props = void
@@ -20,11 +20,11 @@ function App() {
       {/*<h1>Flex react select</h1>*/}
       {/*<FlexReactSelect />*/}
       {/*<h1>State machine experiment</h1>*/}
-      {/*<OpenVault />*/}
+      {/*<OpenBorrowVault />*/}
       {/*<h1>james riff experiment</h1>*/}
       {/*<JamesRiffExperiment />*/}
       <h1>Flow</h1>
-      <OpenVault />
+      <OpenBorrowVault />
       {/*<h1>FLow debug</h1>*/}
       {/*<Flow<Type>*/}
       {/*  name="new flow"*/}
