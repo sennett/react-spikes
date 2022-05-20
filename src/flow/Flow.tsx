@@ -1,5 +1,4 @@
 import { useState, FC } from 'react'
-import { Step } from './create-proxy/CreateProxy'
 
 export type GenericStepProps<S> = {
   next?: () => void
@@ -11,7 +10,7 @@ export type GenericStepProps<S> = {
 type Direction = 'forwards' | 'backwards'
 
 export function Flow<S>(
-  props: { steps: Array<FC<GenericStepProps<S>> & Step<GenericStepProps<S>>> } & {
+  props: { steps: Array<IStep<GenericStepProps<S>>> } & {
     updateState: (state: Partial<S>) => void
     next?: () => void
     previous?: () => void
@@ -21,17 +20,19 @@ export function Flow<S>(
   const parentPrevious = props.previous
   const parentNext = props.next
 
-  const [currentStep, setCurrentStep] = useState(0)
+  let nextPreviousCalledThisRender = false
+  const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [direction, setDirection] = useState<Direction>('forwards')
 
   const isNestedFlow = parentPrevious || parentNext
-  const canProgress = currentStep < props.steps.length - 1
-  const canRegress = currentStep > 0
+  const canProgress = currentStepIndex < props.steps.length - 1
+  const canRegress = currentStepIndex > 0
 
   const next = canProgress
     ? () => {
+        nextPreviousCalledThisRender = true
         setDirection('forwards')
-        setCurrentStep((currentStep) => currentStep + 1)
+        setCurrentStepIndex((currentStep) => currentStep + 1)
       }
     : isNestedFlow
     ? parentNext
@@ -39,8 +40,9 @@ export function Flow<S>(
 
   const previous = canRegress
     ? () => {
+        nextPreviousCalledThisRender = true
         setDirection('backwards')
-        setCurrentStep((currentStep) => currentStep - 1)
+        setCurrentStepIndex((currentStep) => currentStep - 1)
       }
     : isNestedFlow
     ? parentPrevious
@@ -48,18 +50,29 @@ export function Flow<S>(
 
   const skip = direction === 'forwards' ? next : previous
 
-  const CurrentStep = props.steps[currentStep]
-  const canSkip = !!CurrentStep?.canSkip && skip
+  const currentStep = props.steps[currentStepIndex]
 
-  return (
-    <>
-      {canSkip && CurrentStep.canSkip!(props) ? (
-        skip()
-      ) : (
-        <div style={{ visibility: canSkip ? 'hidden' : 'visible' }}>
-          <CurrentStep {...props} next={next} previous={previous} skip={skip} />
-        </div>
-      )}
-    </>
-  )
+  if (
+    nextPreviousCalledThisRender &&
+    isSkippable(currentStep) &&
+    skip &&
+    currentStep.canSkip(props)
+  ) {
+    console.log(`skipping step with index ${currentStepIndex} in flow ${props.name}`)
+    skip()
+  }
+
+  return <currentStep.Component {...props} next={next} previous={previous} skip={skip} />
+}
+
+function isSkippable<T>(step: IStep<T> | ISkippableStep<T>): step is ISkippableStep<T> {
+  return (step as ISkippableStep<T>).canSkip !== undefined
+}
+
+export interface IStep<StepSpecificProps> {
+  Component: FC<GenericStepProps<StepSpecificProps>>
+}
+
+export interface ISkippableStep<StepSpecificProps> extends IStep<StepSpecificProps> {
+  canSkip: (s: StepSpecificProps) => boolean
 }

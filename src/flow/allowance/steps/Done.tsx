@@ -1,13 +1,15 @@
-import { GenericStepProps } from '../../Flow'
+import { GenericStepProps, IStep } from '../../Flow'
 
 export type DoneProps = {}
 
-export function Done(props: GenericStepProps<DoneProps>) {
-  return (
-    <>
-      Allowance created
-      <br />
-      <button onClick={props.next}>next</button>
-    </>
-  )
+export const Done: IStep<DoneProps> = {
+  Component: (props: GenericStepProps<DoneProps>) => {
+    return (
+      <>
+        Allowance created
+        <br />
+        <button onClick={props.next}>next</button>
+      </>
+    )
+  },
 }
