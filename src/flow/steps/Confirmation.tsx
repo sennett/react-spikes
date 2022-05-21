@@ -1,6 +1,7 @@
 import { GenericStepProps, IStep } from '../Flow'
 import { useState } from 'react'
 import { useLoadingDots } from '../hooks/useLoadingDots'
+import { Observable, of } from 'rxjs'
 
 export type ConfirmationProps = {
   depositAmount?: number
@@ -42,5 +43,8 @@ export const Confirmation: IStep<ConfirmationProps> = {
         </button>
       </>
     )
+  },
+  canSkip$: (): Observable<boolean> => {
+    return of(false)
   },
 }

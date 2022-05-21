@@ -5,6 +5,7 @@ import { CreateProxy, CreateProxyProps } from './create-proxy/CreateProxy'
 import { Confirmation, ConfirmationProps } from './steps/Confirmation'
 import { Complete, CompleteProps } from './steps/Complete'
 import { Allowance } from './allowance/Allowance'
+import { Subject } from 'rxjs'
 
 type OpenBorrowVaultType = SimulateStepProps & CreateProxyProps & ConfirmationProps & CompleteProps
 
@@ -20,11 +21,17 @@ export function OpenBorrowVault() {
     ethPrice: 2000,
     walletAddress: '0xWalletAddress',
   })
+  const state$ = new Subject<OpenBorrowVaultType>()
 
   useEffect(() => {
     const i = setInterval(() => {
       setViewState((oldState) => {
-        return calculateViewModal({ ...oldState, ethPrice: Math.floor(Math.random() * 10000) })
+        const nextState = calculateViewModal({
+          ...oldState,
+          ethPrice: Math.floor(Math.random() * 10000),
+        })
+        state$.next(nextState)
+        return nextState
       })
     }, 1000)
     return () => clearInterval(i)
@@ -38,6 +45,7 @@ export function OpenBorrowVault() {
       updateState={(newState) =>
         setViewState((oldState) => calculateViewModal({ ...oldState, ...newState }))
       }
+      state$={state$.asObservable()}
     />
   )
 }

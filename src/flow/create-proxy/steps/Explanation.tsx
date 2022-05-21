@@ -1,3 +1,4 @@
+import { Observable, of } from 'rxjs'
 import { GenericStepProps, IStep } from '../../Flow'
 
 export type ExplanationProps = {
@@ -23,5 +24,8 @@ export const Explanation: IStep<ExplanationProps> = {
         </button>
       </>
     )
+  },
+  canSkip$: (): Observable<boolean> => {
+    return of(false)
   },
 }

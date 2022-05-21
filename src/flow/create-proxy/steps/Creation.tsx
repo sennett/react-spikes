@@ -1,7 +1,7 @@
 import { GenericStepProps, IStep } from '../../Flow'
 import { useEffect } from 'react'
 import { useLoadingDots } from '../../hooks/useLoadingDots'
-import { clear } from '@testing-library/user-event/dist/clear'
+import { Observable, of } from 'rxjs'
 
 export type CreationProps = {
   walletAddress: string
@@ -29,5 +29,8 @@ export const Creation: IStep<CreationProps> = {
         {dots}
       </>
     )
+  },
+  canSkip$: (): Observable<boolean> => {
+    return of(false)
   },
 }

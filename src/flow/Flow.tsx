@@ -1,27 +1,33 @@
 import { useState, FC } from 'react'
+import { Observable } from 'rxjs'
+import { useObservable } from '../stateMachineExperiment/helpers/useObservable'
 
 export type GenericStepProps<S> = {
   next?: () => void
   previous?: () => void
   updateState: (s: Partial<S>) => void
   skip?: () => void
+  state$: Observable<S>
 } & S
 
 type Direction = 'forwards' | 'backwards'
 
 export function Flow<S>(
-  props: { steps: Array<IStep<GenericStepProps<S>>> } & {
+  props: { steps: Array<IStep<S>> } & {
     updateState: (state: Partial<S>) => void
     next?: () => void
     previous?: () => void
     name: string
+    state$: Observable<S>
   } & S,
 ) {
   const parentPrevious = props.previous
   const parentNext = props.next
 
-  let nextPreviousCalledThisRender = false
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const currentStep = props.steps[currentStepIndex]
+  const canSkip = useObservable(currentStep.canSkip$(props.state$))
+
   const [direction, setDirection] = useState<Direction>('forwards')
 
   const isNestedFlow = parentPrevious || parentNext
@@ -30,7 +36,6 @@ export function Flow<S>(
 
   const next = canProgress
     ? () => {
-        nextPreviousCalledThisRender = true
         setDirection('forwards')
         setCurrentStepIndex((currentStep) => currentStep + 1)
       }
@@ -40,7 +45,6 @@ export function Flow<S>(
 
   const previous = canRegress
     ? () => {
-        nextPreviousCalledThisRender = true
         setDirection('backwards')
         setCurrentStepIndex((currentStep) => currentStep - 1)
       }
@@ -50,14 +54,7 @@ export function Flow<S>(
 
   const skip = direction === 'forwards' ? next : previous
 
-  const currentStep = props.steps[currentStepIndex]
-
-  if (
-    nextPreviousCalledThisRender &&
-    isSkippable(currentStep) &&
-    skip &&
-    currentStep.canSkip(props)
-  ) {
+  if (skip && canSkip) {
     console.log(`skipping step with index ${currentStepIndex} in flow ${props.name}`)
     skip()
   }
@@ -65,14 +62,7 @@ export function Flow<S>(
   return <currentStep.Component {...props} next={next} previous={previous} skip={skip} />
 }
 
-function isSkippable<T>(step: IStep<T> | ISkippableStep<T>): step is ISkippableStep<T> {
-  return (step as ISkippableStep<T>).canSkip !== undefined
-}
-
 export interface IStep<StepSpecificProps> {
   Component: FC<GenericStepProps<StepSpecificProps>>
-}
-
-export interface ISkippableStep<StepSpecificProps> extends IStep<StepSpecificProps> {
-  canSkip: (s: StepSpecificProps) => boolean
+  canSkip$: (state$: Observable<StepSpecificProps>) => Observable<boolean>
 }

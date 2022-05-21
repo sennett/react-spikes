@@ -1,6 +1,7 @@
 import { GenericStepProps, IStep } from '../../Flow'
 import { SyntheticEvent, useState } from 'react'
 import { useLoadingDots } from '../../hooks/useLoadingDots'
+import { Observable, of } from 'rxjs'
 
 export type ConfigureAllowanceAmountProps = {
   depositAmount?: number
@@ -91,5 +92,8 @@ export const ConfigureAllowanceAmount: IStep<ConfigureAllowanceAmountProps> = {
         </button>
       </>
     )
+  },
+  canSkip$: (): Observable<boolean> => {
+    return of(false)
   },
 }
