@@ -1,3 +1,4 @@
+import { Observable, of } from 'rxjs'
 import { GenericStepProps, IStep } from '../../Flow'
 
 export type DoneProps = {}
@@ -11,5 +12,8 @@ export const Done: IStep<DoneProps> = {
         <button onClick={props.next}>next</button>
       </>
     )
+  },
+  canSkip$: (): Observable<boolean> => {
+    return of(false)
   },
 }
