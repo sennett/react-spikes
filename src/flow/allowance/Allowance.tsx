@@ -12,12 +12,6 @@ export const Allowance: ISkippableStep<AllowanceProps> = {
   Component: (props: GenericStepProps<AllowanceProps>) => {
     const [viewState, setViewState] = useState<AllowanceProps>(props)
 
-    useEffect(() => {
-      if (props.configuredAllowance) {
-        props.skip!()
-      }
-    }, [])
-
     return (
       <Flow<AllowanceProps>
         {...viewState}

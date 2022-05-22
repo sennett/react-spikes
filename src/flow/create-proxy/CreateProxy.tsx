@@ -23,7 +23,6 @@ export const CreateProxy: ISkippableStep<CreateProxyProps> = {
     )
   },
   canSkip: (props: CreateProxyProps) => {
-    console.log('here')
     return !!props.proxyAddress
   },
 }
