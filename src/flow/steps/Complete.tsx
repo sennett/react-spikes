@@ -17,4 +17,5 @@ export const Complete: IStep<CompleteProps> = {
       </>
     )
   },
+  displayName: 'Complete',
 }

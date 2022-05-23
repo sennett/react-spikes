@@ -1,7 +1,6 @@
 import { GenericStepProps, IStep } from '../../Flow'
 import { useEffect } from 'react'
 import { useLoadingDots } from '../../hooks/useLoadingDots'
-import { clear } from '@testing-library/user-event/dist/clear'
 
 export type CreationProps = {
   walletAddress: string
@@ -9,18 +8,19 @@ export type CreationProps = {
 }
 
 export const Creation: IStep<CreationProps> = {
-  Component: (props: GenericStepProps<CreationProps>) => {
+  Component: function Creation(props: GenericStepProps<CreationProps>) {
     const dots = useLoadingDots()
 
     useEffect(() => {
       const i = setTimeout(() => {
-        console.log('updating  step')
-        props.updateState({ proxyAddress: '0xProxyAddress' })
-        console.log('calling next')
-        props.next!()
+        if (!props.hidden) {
+          console.log('updating  step')
+          props.updateState({ proxyAddress: '0xProxyAddress' })
+          props.next!()
+        }
       }, 3000)
       return () => clearTimeout(i)
-    }, [])
+    }, [props.hidden])
 
     return (
       <>
@@ -30,4 +30,5 @@ export const Creation: IStep<CreationProps> = {
       </>
     )
   },
+  displayName: 'Creation',
 }

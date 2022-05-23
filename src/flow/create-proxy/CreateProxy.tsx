@@ -1,5 +1,4 @@
-import { Flow, GenericStepProps, ISkippableStep } from '../Flow'
-import { FC, useState } from 'react'
+import { Flow, ISkippableStep } from '../Flow'
 import { Explanation, ExplanationProps } from './steps/Explanation'
 import { Creation, CreationProps } from './steps/Creation'
 import { Done, DoneProps } from './steps/Done'
@@ -7,23 +6,19 @@ import { Done, DoneProps } from './steps/Done'
 export type CreateProxyProps = ExplanationProps & CreationProps & DoneProps
 
 export const CreateProxy: ISkippableStep<CreateProxyProps> = {
-  Component: (props) => {
-    const [viewState, setViewState] = useState<CreateProxyProps>(props)
-
+  Component: function CreateProxy(props) {
     return (
       <Flow<CreateProxyProps>
-        {...viewState}
+        {...props}
         name="proxy"
         steps={[Explanation, Creation, Done]}
-        updateState={(newState) => {
-          setViewState((oldState) => ({ ...oldState, ...newState }))
-          props.updateState(newState)
-        }}
+        updateState={(newState) => props.updateState(newState)}
+        hidden={props.hidden}
       />
     )
   },
   canSkip: (props: CreateProxyProps) => {
-    console.log('here')
     return !!props.proxyAddress
   },
+  displayName: 'CreateProxy',
 }

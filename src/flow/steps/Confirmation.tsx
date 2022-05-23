@@ -26,6 +26,8 @@ export const Confirmation: IStep<ConfirmationProps> = {
       }, 5000)
     }
 
+    if (props.hidden) return null
+
     return (
       <>
         Confirmation
@@ -43,4 +45,5 @@ export const Confirmation: IStep<ConfirmationProps> = {
       </>
     )
   },
+  displayName: 'Confirmation',
 }

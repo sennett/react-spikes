@@ -24,4 +24,5 @@ export const Explanation: IStep<ExplanationProps> = {
       </>
     )
   },
+  displayName: 'Explanation',
 }
