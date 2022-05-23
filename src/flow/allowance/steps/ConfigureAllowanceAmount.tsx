@@ -1,4 +1,4 @@
-import { GenericStepProps, IStep } from '../../Flow'
+import { IStep } from '../../Flow'
 import { SyntheticEvent, useState } from 'react'
 import { useLoadingDots } from '../../hooks/useLoadingDots'
 
@@ -10,7 +10,7 @@ export type ConfigureAllowanceAmountProps = {
 type AllowanceRequestState = 'not sent' | 'in progress' | 'done'
 
 export const ConfigureAllowanceAmount: IStep<ConfigureAllowanceAmountProps> = {
-  Component: (props: GenericStepProps<ConfigureAllowanceAmountProps>) => {
+  Component: (props) => {
     const [allowanceRequestState, setAllowanceRequestState] =
       useState<AllowanceRequestState>('not sent')
     const [selectedRadio, setSelectedRadio] = useState('custom')

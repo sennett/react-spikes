@@ -1,11 +1,11 @@
-import { GenericStepProps, IStep } from '../../Flow'
+import { IStep } from '../../Flow'
 
 export type ExplanationProps = {
   walletAddress: string
 }
 
 export const Explanation: IStep<ExplanationProps> = {
-  Component: (props: GenericStepProps<ExplanationProps>) => {
+  Component: (props) => {
     return (
       <>
         Create proxy

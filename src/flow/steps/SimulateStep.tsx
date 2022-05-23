@@ -1,4 +1,4 @@
-import { GenericStepProps, IStep } from '../Flow'
+import { IStep } from '../Flow'
 
 export type SimulateStepProps = {
   ethPrice: number
@@ -7,7 +7,7 @@ export type SimulateStepProps = {
 }
 
 export const SimulateStep: IStep<SimulateStepProps> = {
-  Component: (props: GenericStepProps<SimulateStepProps>) => {
+  Component: (props) => {
     return (
       <>
         Simulate vault

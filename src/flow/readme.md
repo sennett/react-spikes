@@ -4,7 +4,7 @@ Overview
 - `Flow` component manages current displayed step, back/forward and skip.
   - It renders the current step, and can be displayed like a standard react component.
   - Handles what happens when a step calls `back`, `next`, or `skip`.
-- Steps are just react components that receive a `GenericStepProps<T>` props arg.
+- Steps are just react components that receive a `T>` props arg.
   - `T` is the props relevant to the step (both what they consume and what they update).
   - Steps control when they move on, not `Flow`.
   - If a step is complete (i.e. proxy/allowance), it can call `props.skip!()` inside `useEffect` to cause `Flow` to skip the step and go the next one.

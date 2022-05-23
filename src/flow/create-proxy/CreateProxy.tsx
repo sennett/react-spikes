@@ -1,4 +1,4 @@
-import { Flow, GenericStepProps, ISkippableStep } from '../Flow'
+import { Flow, ISkippableStep } from '../Flow'
 import { FC, useState } from 'react'
 import { Explanation, ExplanationProps } from './steps/Explanation'
 import { Creation, CreationProps } from './steps/Creation'

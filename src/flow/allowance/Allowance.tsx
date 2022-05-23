@@ -1,4 +1,4 @@
-import { Flow, GenericStepProps, ISkippableStep } from '../Flow'
+import { Flow, ISkippableStep } from '../Flow'
 import {
   ConfigureAllowanceAmount,
   ConfigureAllowanceAmountProps,
@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 export type AllowanceProps = ConfigureAllowanceAmountProps & DoneProps
 
 export const Allowance: ISkippableStep<AllowanceProps> = {
-  Component: (props: GenericStepProps<AllowanceProps>) => {
+  Component: (props) => {
     const [viewState, setViewState] = useState<AllowanceProps>(props)
 
     return (

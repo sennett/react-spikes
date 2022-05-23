@@ -1,9 +1,9 @@
-import { GenericStepProps, IStep } from '../../Flow'
+import { IStep } from '../../Flow'
 
 export type DoneProps = {}
 
 export const Done: IStep<DoneProps> = {
-  Component: (props: GenericStepProps<DoneProps>) => {
+  Component: (props) => {
     return (
       <>
         Allowance created

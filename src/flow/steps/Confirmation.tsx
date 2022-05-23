@@ -1,4 +1,4 @@
-import { GenericStepProps, IStep } from '../Flow'
+import { IStep } from '../Flow'
 import { useState } from 'react'
 import { useLoadingDots } from '../hooks/useLoadingDots'
 
@@ -12,7 +12,7 @@ export type ConfirmationProps = {
 type VaultCreationStatus = 'not-started' | 'in-progress' | 'done'
 
 export const Confirmation: IStep<ConfirmationProps> = {
-  Component: (props: GenericStepProps<ConfirmationProps>) => {
+  Component: (props) => {
     const dots = useLoadingDots()
     const [vaultCreationStatus, setVaultCreationStatus] =
       useState<VaultCreationStatus>('not-started')

@@ -1,13 +1,7 @@
 import { useState, FC } from 'react'
 
-export type GenericStepProps<S> = {
-  next?: () => void
-  previous?: () => void
-  updateState: (s: Partial<S>) => void
-} & S
-
 export function Flow<S>(
-  props: { steps: Array<IStep<GenericStepProps<S>>> } & {
+  props: { steps: Array<IStep<S>> } & {
     updateState: (state: Partial<S>) => void
     next?: () => void
     previous?: () => void
@@ -28,11 +22,7 @@ export function Flow<S>(
     potentialNextStep = props.steps[potentialNextStepIndex]
   }
 
-  const next = potentialNextStep
-    ? () => setCurrentStepIndex(potentialNextStepIndex)
-    : parentNext
-    ? parentNext
-    : undefined
+  const next = potentialNextStep ? () => setCurrentStepIndex(potentialNextStepIndex) : parentNext
 
   // calculate previous step
   let potentialPreviousStepIndex = currentStepIndex - 1
@@ -50,8 +40,6 @@ export function Flow<S>(
   const previous = potentialPreviousStep
     ? () => setCurrentStepIndex(potentialPreviousStepIndex)
     : parentPrevious
-    ? parentPrevious
-    : undefined
 
   const currentStep = props.steps[currentStepIndex]
 
@@ -63,7 +51,13 @@ function isSkippable<T>(step: IStep<T> | ISkippableStep<T>): step is ISkippableS
 }
 
 export interface IStep<StepSpecificProps> {
-  Component: FC<GenericStepProps<StepSpecificProps>>
+  Component: FC<
+    StepSpecificProps & {
+      next?: () => void
+      previous?: () => void
+      updateState: (s: Partial<StepSpecificProps>) => void
+    }
+  >
 }
 
 export interface ISkippableStep<StepSpecificProps> extends IStep<StepSpecificProps> {
