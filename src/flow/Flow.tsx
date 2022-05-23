@@ -1,18 +1,50 @@
 import { useState, FC } from 'react'
 
-export type GenericStepProps<S> = {
+type FlowPropsBaseType<BigDaddyViewState> = {
+  updateState: (state: string) => void
+  // updateState: (state: BigDaddyViewState extends infer T ? T : never) => void
   next?: () => void
   previous?: () => void
-  updateState: (s: Partial<S>) => void
-} & S
+  name: string
+} & BigDaddyViewState
 
-export function Flow<S>(
-  props: { steps: Array<IStep<GenericStepProps<S>>> } & {
-    updateState: (state: Partial<S>) => void
+export function Flow<BigDaddyViewState, A, B>(
+  props: {
+    steps: [IStep<A, B>]
+  } & FlowPropsBaseType<BigDaddyViewState>,
+): JSX.Element
+export function Flow<BigDaddyViewState, A, B, C>(
+  props: {
+    steps: [IStep<A, B>, IStep<A & B, C>]
+  } & FlowPropsBaseType<BigDaddyViewState>,
+): JSX.Element
+export function Flow<BigDaddyViewState, A, B, C, D>(
+  props: {
+    steps: [IStep<A, B>, IStep<A & B, C>, IStep<A & B & C, D>]
+  } & FlowPropsBaseType<BigDaddyViewState>,
+): JSX.Element
+export function Flow<BigDaddyViewState, A, B, C, D, E>(
+  props: {
+    steps: [IStep<A, B>, IStep<A & B, C>, IStep<A & B & C, D>, IStep<A & B & C & D, E>]
+  } & FlowPropsBaseType<BigDaddyViewState>,
+): JSX.Element
+export function Flow<BigDaddyViewState, A, B, C, D, E, F>(
+  props: {
+    steps: [IStep<A, B>, IStep<A & B, C>, IStep<A & B & C, D>, IStep<A & B & C & D & E, F>]
+  } & FlowPropsBaseType<BigDaddyViewState>,
+): JSX.Element
+export function Flow<BigDaddyViewState, A, B, C, D, E, F, G>(
+  props: {
+    steps: [IStep<A, B>, IStep<A & B, C>, IStep<A & B & C, D>, IStep<A & B & C & D & E & G, G>]
+  } & FlowPropsBaseType<BigDaddyViewState>,
+): JSX.Element
+export function Flow<BigDaddyViewState>(
+  props: { steps: Array<IStep<any, any>> } & {
+    updateState: (state: any) => void
     next?: () => void
     previous?: () => void
     name: string
-  } & S,
+  } & BigDaddyViewState,
 ) {
   const parentPrevious = props.previous
   const parentNext = props.next
@@ -58,14 +90,23 @@ export function Flow<S>(
   return <currentStep.Component {...props} next={next} previous={previous} />
 }
 
-function isSkippable<T>(step: IStep<T> | ISkippableStep<T>): step is ISkippableStep<T> {
-  return (step as ISkippableStep<T>).canSkip !== undefined
+function isSkippable<StateRequired, StateProvided>(
+  step: IStep<StateRequired, StateProvided> | ISkippableStep<StateRequired, StateProvided>,
+): step is ISkippableStep<StateRequired, StateProvided> {
+  return (step as ISkippableStep<StateRequired, StateProvided>).canSkip !== undefined
 }
 
-export interface IStep<StepSpecificProps> {
-  Component: FC<GenericStepProps<StepSpecificProps>>
+export interface IStep<StateRequired, StateProvided> {
+  Component: FC<
+    {
+      next?: () => void
+      previous?: () => void
+      updateState: (s: StateProvided) => void
+    } & StateRequired
+  >
 }
 
-export interface ISkippableStep<StepSpecificProps> extends IStep<StepSpecificProps> {
-  canSkip: (s: StepSpecificProps) => boolean
+export interface ISkippableStep<StateRequired, StateProvided>
+  extends IStep<StateRequired, StateProvided> {
+  canSkip: (s: StateRequired) => boolean
 }

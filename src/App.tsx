@@ -1,15 +1,7 @@
 import React, { useState } from 'react'
 import './App.css'
-import { OpenBorrowVault } from './flow/OpenBorrowVault'
-import { Flow, GenericStepProps } from './flow/Flow'
-
-type Step1Props = void
-
-// function Step1(props: GenericStepProps<Step1Props>) {
-//   return <button onClick={props.next}> n</button>
-// }
-
-// type Type = Step1Props & { one: string }
+// import { OpenBorrowVault } from './flow/OpenBorrowVault'
+import { Wizard } from './flow/SimpleWizardWithTypes'
 
 function App() {
   // const [s, ss] = useState<Type>({ one: 'hello' })
@@ -24,7 +16,7 @@ function App() {
       {/*<h1>james riff experiment</h1>*/}
       {/*<JamesRiffExperiment />*/}
       <h1>Flow</h1>
-      <OpenBorrowVault />
+      {/*<OpenBorrowVault />*/}
       {/*<h1>FLow debug</h1>*/}
       {/*<Flow<Type>*/}
       {/*  name="new flow"*/}
@@ -32,6 +24,8 @@ function App() {
       {/*  steps={[Step1]}*/}
       {/*  updateState={(ns) => ss((os) => ({ ...os, ...ns }))}*/}
       {/*/>*/}
+      <h1>Simple Wizard</h1>
+      <Wizard />
     </div>
   )
 }
