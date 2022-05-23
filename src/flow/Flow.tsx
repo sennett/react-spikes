@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, FC, useMemo } from 'react'
+import { useState, FC } from 'react'
 
 export type GenericStepProps<S> = {
   next?: () => void
@@ -7,9 +7,6 @@ export type GenericStepProps<S> = {
   updateState: (s: Partial<S>) => void
   hidden?: boolean
 } & S
-
-// TODO: Switch to rendering all steps and using CSS to hide/display
-// TODO: Think about state and canSkip
 
 export function Flow<S>(
   props: { steps: Array<IStep<GenericStepProps<S>>> } & {
