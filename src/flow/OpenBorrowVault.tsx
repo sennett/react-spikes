@@ -4,9 +4,6 @@ import { SimulateStep, SimulateStepProps } from './steps/SimulateStep'
 import { CreateProxy, CreateProxyProps } from './create-proxy/CreateProxy'
 import { Confirmation, ConfirmationProps } from './steps/Confirmation'
 import { Complete, CompleteProps } from './steps/Complete'
-import { Allowance } from './allowance/Allowance'
-import { interval } from 'rxjs'
-import { map } from 'rxjs/operators'
 
 type OpenBorrowVaultType = SimulateStepProps & CreateProxyProps & ConfirmationProps & CompleteProps
 
@@ -18,9 +15,13 @@ function calculateViewModal(state: OpenBorrowVaultType): OpenBorrowVaultType {
 }
 
 export function OpenBorrowVault() {
-  const viewState = {
+  const [viewState, setViewState] = useState<OpenBorrowVaultType>({
     ethPrice: 2000,
     walletAddress: '0xWalletAddress',
+  })
+
+  function spreadViewState(stateUpdate: Partial<OpenBorrowVaultType>) {
+    setViewState((currentState) => ({ ...currentState, ...stateUpdate }))
   }
 
   // useEffect(() => {
@@ -35,9 +36,10 @@ export function OpenBorrowVault() {
   return (
     <Flow<OpenBorrowVaultType>
       name="open vault"
-      // steps={[SimulateStep(), CreateProxy, Allowance, Confirmation, Complete]}
-      steps={[SimulateStep(), CreateProxy()]}
+      // steps={[SimulateStep, CreateProxy, Allowance, Confirmation, Complete]}
+      steps={[SimulateStep, CreateProxy]}
       {...viewState}
+      updateState={spreadViewState}
     />
   )
 }

@@ -18,5 +18,5 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
-  "exclude":["src/flow/allowance"]
+  "exclude":["src/flow/allowance/*"]
 }

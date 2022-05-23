@@ -21,7 +21,7 @@ export const Confirmation: IStep<ConfirmationProps> = {
       setVaultCreationStatus('in-progress')
       setTimeout(() => {
         setVaultCreationStatus('done')
-        props.updateState({ vaultId: 34567 })
+        props.updateState!({ vaultId: 34567 })
         props.next!()
       }, 5000)
     }
