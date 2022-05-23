@@ -4,31 +4,21 @@ import {
   ConfigureAllowanceAmountProps,
 } from './steps/ConfigureAllowanceAmount'
 import { Done, DoneProps } from './steps/Done'
-import { useEffect, useState } from 'react'
 
 export type AllowanceProps = ConfigureAllowanceAmountProps & DoneProps
 
 export const Allowance: ISkippableStep<AllowanceProps> = {
   Component: (props: GenericStepProps<AllowanceProps>) => {
-    const [viewState, setViewState] = useState<AllowanceProps>(props)
-
-    useEffect(() => {
-      if (props.configuredAllowance) {
-        props.skip!()
-      }
-    }, [])
-
     return (
       <Flow<AllowanceProps>
-        {...viewState}
+        {...props}
         name="allowance"
         steps={[ConfigureAllowanceAmount, Done]}
-        updateState={(newState) => {
-          setViewState((oldState) => ({ ...oldState, ...newState }))
-          props.updateState(newState)
-        }}
+        updateState={(newState) => props.updateState(newState)}
+        hidden={props.hidden}
       />
     )
   },
   canSkip: (props) => !!props.configuredAllowance,
+  displayName: 'Allowance',
 }

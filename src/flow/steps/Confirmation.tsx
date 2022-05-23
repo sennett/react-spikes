@@ -43,4 +43,5 @@ export const Confirmation: IStep<ConfirmationProps> = {
       </>
     )
   },
+  displayName: 'Confirmation',
 }

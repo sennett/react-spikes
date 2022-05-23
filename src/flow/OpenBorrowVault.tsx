@@ -26,7 +26,7 @@ export function OpenBorrowVault() {
       setViewState((oldState) => {
         return calculateViewModal({ ...oldState, ethPrice: Math.floor(Math.random() * 10000) })
       })
-    }, 1000)
+    }, 10000)
     return () => clearInterval(i)
   })
 

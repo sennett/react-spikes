@@ -15,4 +15,5 @@ export const Done: IStep<DoneProps> = {
       </>
     )
   },
+  displayName: 'Done',
 }

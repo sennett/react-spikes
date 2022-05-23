@@ -40,4 +40,5 @@ export const SimulateStep: IStep<SimulateStepProps> = {
       </>
     )
   },
+  displayName: 'SimulateStep',
 }

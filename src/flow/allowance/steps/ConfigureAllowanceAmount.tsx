@@ -1,4 +1,4 @@
-import { GenericStepProps, IStep } from '../../Flow'
+import { GenericStepProps, ISkippableStep } from '../../Flow'
 import { SyntheticEvent, useState } from 'react'
 import { useLoadingDots } from '../../hooks/useLoadingDots'
 
@@ -9,7 +9,7 @@ export type ConfigureAllowanceAmountProps = {
 
 type AllowanceRequestState = 'not sent' | 'in progress' | 'done'
 
-export const ConfigureAllowanceAmount: IStep<ConfigureAllowanceAmountProps> = {
+export const ConfigureAllowanceAmount: ISkippableStep<ConfigureAllowanceAmountProps> = {
   Component: (props: GenericStepProps<ConfigureAllowanceAmountProps>) => {
     const [allowanceRequestState, setAllowanceRequestState] =
       useState<AllowanceRequestState>('not sent')
@@ -92,4 +92,11 @@ export const ConfigureAllowanceAmount: IStep<ConfigureAllowanceAmountProps> = {
       </>
     )
   },
+  canSkip: (props: ConfigureAllowanceAmountProps) =>
+    !!(
+      props.configuredAllowance &&
+      props.depositAmount &&
+      props.configuredAllowance >= props.depositAmount
+    ),
+  displayName: 'Allowance|ConfigureAllowanceAmount',
 }

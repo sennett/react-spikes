@@ -12,4 +12,5 @@ export const Done: IStep<DoneProps> = {
       </>
     )
   },
+  displayName: 'Allowance|Done',
 }
