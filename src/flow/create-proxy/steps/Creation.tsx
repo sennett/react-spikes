@@ -1,33 +1,38 @@
-import { IStep } from '../../Flow'
+import { IStateProviderStep, IStep } from '../../Flow'
 import { useEffect } from 'react'
 import { useLoadingDots } from '../../hooks/useLoadingDots'
 import { clear } from '@testing-library/user-event/dist/clear'
+import { Subject } from 'rxjs'
 
-export type CreationProps = {
+export type StepProps = {
   walletAddress: string
   proxyAddress?: string
 }
 
-export const Creation: IStep<CreationProps> = {
-  Component: (props) => {
-    const dots = useLoadingDots()
+type StateFromStep = { proxyAddress: string }
 
-    useEffect(() => {
-      const i = setTimeout(() => {
-        console.log('updating  step')
-        props.updateState({ proxyAddress: '0xProxyAddress' })
-        console.log('calling next')
-        props.next!()
-      }, 3000)
-      return () => clearTimeout(i)
-    }, [])
+export function Creation(): IStateProviderStep<StepProps, StateFromStep> {
+  const updateState$ = new Subject<StateFromStep>()
+  return {
+    updateState$,
+    Component: (props) => {
+      const dots = useLoadingDots()
 
-    return (
-      <>
-        Creating proxy...
-        <br />
-        {dots}
-      </>
-    )
-  },
+      useEffect(() => {
+        const i = setTimeout(() => {
+          updateState$.next({ proxyAddress: '0xProxyAddress' })
+          props.next!()
+        }, 3000)
+        return () => clearTimeout(i)
+      }, [])
+
+      return (
+        <>
+          Creating proxy...
+          <br />
+          {dots}
+        </>
+      )
+    },
+  }
 }

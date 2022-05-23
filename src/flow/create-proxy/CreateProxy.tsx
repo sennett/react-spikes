@@ -1,28 +1,39 @@
-import { Flow, ISkippableStep } from '../Flow'
+import { Flow, GenericStepProps, ISkippableStep, IStateProviderStep } from '../Flow'
 import { FC, useState } from 'react'
 import { Explanation, ExplanationProps } from './steps/Explanation'
-import { Creation, CreationProps } from './steps/Creation'
+import { Creation, StepProps } from './steps/Creation'
 import { Done, DoneProps } from './steps/Done'
+import { SimulateStepProps } from '../steps/SimulateStep'
+import { Observable, Subject } from 'rxjs'
 
-export type CreateProxyProps = ExplanationProps & CreationProps & DoneProps
+export type CreateProxyProps = ExplanationProps & StepProps & DoneProps
 
-export const CreateProxy: ISkippableStep<CreateProxyProps> = {
-  Component: (props) => {
-    const [viewState, setViewState] = useState<CreateProxyProps>(props)
+export type ProxyCreated = {
+  proxyAddress: string
+}
 
-    return (
-      <Flow<CreateProxyProps>
-        {...viewState}
-        name="proxy"
-        steps={[Explanation, Creation, Done]}
-        updateState={(newState) => {
-          setViewState((oldState) => ({ ...oldState, ...newState }))
-          props.updateState(newState)
-        }}
-      />
-    )
-  },
-  canSkip: (props: CreateProxyProps) => {
-    return !!props.proxyAddress
-  },
+export function CreateProxy(): IStateProviderStep<CreateProxyProps, ProxyCreated> &
+  ISkippableStep<CreateProxyProps> {
+  const updateState$ = new Subject<ProxyCreated>()
+  return {
+    updateState$,
+    Component: (props: GenericStepProps<CreateProxyProps>) => {
+      return (
+        <Flow<CreateProxyProps>
+          {...props}
+          name="proxy"
+          steps={[Explanation(), Creation(), Done]}
+          captureStateChange={(observable$) => observable$.subscribe()}
+          // updateState={(newState) => {
+          //   if (newState.proxyAddress) {
+          //     updateState$.next({ proxyAddress: newState.proxyAddress })
+          //   }
+          // }}
+        />
+      )
+    },
+    canSkip: (props: CreateProxyProps) => {
+      return !!props.proxyAddress
+    },
+  }
 }
