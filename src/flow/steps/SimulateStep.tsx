@@ -12,9 +12,6 @@ type SimulateStepProvidedState = {
 
 export const SimulateStep: IStep<SimulateStepProps> = {
   Component: (props: GenericStepProps<SimulateStepProps>) => {
-    console.log('rerender')
-    console.log(`state ${JSON.stringify(props)}`)
-    console.log(props.depositAmountUsd)
     return (
       <>
         Simulate vault

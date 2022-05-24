@@ -1,12 +1,26 @@
 import { IStep } from '../../Flow'
+import { useLoadingDots } from '../../hooks/useLoadingDots'
+import { useState } from 'react'
 
 export type ExplanationProps = {
   walletAddress: string
+  proxyAddress?: string
 }
 
-export function Explanation(): IStep<ExplanationProps> {
-  return {
-    Component: (props) => {
+export const Explanation: IStep<ExplanationProps> = {
+  Component: (props) => {
+    const [creatingProxy, setCreatingProxy] = useState(false)
+    const dots = useLoadingDots()
+
+    function createProxy() {
+      setCreatingProxy(true)
+      setTimeout(() => {
+        props.updateState!({ proxyAddress: '0xProxyAddress' })
+        props.next!()
+      }, 3000)
+    }
+
+    if (!creatingProxy) {
       return (
         <>
           Create proxy
@@ -19,11 +33,19 @@ export function Explanation(): IStep<ExplanationProps> {
           <button disabled={!props.previous} onClick={props.previous}>
             previous
           </button>
-          <button disabled={!props.next} onClick={props.next}>
+          <button disabled={!props.next} onClick={createProxy}>
             next
           </button>
         </>
       )
-    },
-  }
+    } else {
+      return (
+        <>
+          Creating proxy...
+          <br />
+          {dots}
+        </>
+      )
+    }
+  },
 }

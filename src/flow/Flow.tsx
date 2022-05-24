@@ -1,4 +1,4 @@
-import { useState, FC } from 'react'
+import { useState, FC, ReactNode } from 'react'
 
 export function Flow<S>(
   props: { steps: Array<IBaseStep> } & {
@@ -41,9 +41,25 @@ export function Flow<S>(
     ? () => setCurrentStepIndex(potentialPreviousStepIndex)
     : parentPrevious
 
-  const currentStep = props.steps[currentStepIndex]
+  return (
+    <>
+      {props.steps.map((step, index) => {
+        if (index === currentStepIndex) {
+          return <step.Component {...props} next={next} previous={previous} key={index} />
+        } else {
+          return (
+            <Hide key={index}>
+              <step.Component {...props} next={next} previous={previous} />
+            </Hide>
+          )
+        }
+      })}
+    </>
+  )
+}
 
-  return <currentStep.Component {...props} next={next} previous={previous} />
+function Hide(props: { children: ReactNode }) {
+  return <div style={{ display: 'none' }}>{props.children}</div>
 }
 
 export type GenericStepProps<StepSpecificProps> = {
