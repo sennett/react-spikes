@@ -9,6 +9,9 @@ import { useAppContext } from './hooks/useAppContext'
 
 type OpenBorrowVaultType = SimulateStepProps & CreateProxyProps & ConfirmationProps & CompleteProps
 
+// ensures we can only update state that exists
+type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> & U[keyof U]
+
 export function OpenBorrowVault() {
   const [viewState, setViewState] = useState<OpenBorrowVaultType>({
     ethPrice: 2000,
@@ -16,7 +19,7 @@ export function OpenBorrowVault() {
   })
   const { ethPrice$ } = useAppContext()
 
-  function spreadViewState(stateUpdate: Partial<OpenBorrowVaultType>) {
+  function spreadViewState(stateUpdate: AtLeastOne<OpenBorrowVaultType>) {
     setViewState((currentState) => ({ ...currentState, ...stateUpdate }))
   }
 
@@ -38,6 +41,8 @@ export function OpenBorrowVault() {
         />
       </div>
       <pre style={{ textAlign: 'left' }}>{JSON.stringify(viewState, null, 2)}</pre>
+      <br />
+      <a href="/">Simulate user starting with nothing</a>
       <br />
       <a href="/?proxy_address=hello">Simulate preexisting DS proxy</a>
       <br />

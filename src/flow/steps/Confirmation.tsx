@@ -1,6 +1,7 @@
 import { IStep } from '../Flow'
 import { useState } from 'react'
 import { useLoadingDots } from '../hooks/useLoadingDots'
+import { createVault$ } from '../openVault.pipe'
 
 export type ConfirmationProps = {
   depositAmount?: number
@@ -19,11 +20,14 @@ export const Confirmation: IStep<ConfirmationProps> = {
 
     function confirm() {
       setVaultCreationStatus('in-progress')
-      setTimeout(() => {
-        setVaultCreationStatus('done')
-        props.updateState!({ vaultId: 34567 })
-        props.next!()
-      }, 5000)
+      if (props.proxyAddress && props.depositAmount) {
+        createVault$(props.proxyAddress, props.depositAmount).subscribe({
+          next: (vaultId) => {
+            props.updateState!(vaultId)
+            props.next!()
+          },
+        })
+      }
     }
 
     return (
