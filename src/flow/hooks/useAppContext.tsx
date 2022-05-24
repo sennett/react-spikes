@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { AppContext, setupAppContext } from '../appContext'
 
 export const appContext = React.createContext<AppContext>(setupAppContext())
