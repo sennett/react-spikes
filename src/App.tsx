@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import './App.css'
 import { OpenBorrowVault } from './flow/OpenBorrowVault'
+import { appContext } from './flow/hooks/useAppContext'
+import { setupAppContext } from './flow/appContext'
 
 function App() {
   // const [s, ss] = useState<Type>({ one: 'hello' })
@@ -14,8 +16,10 @@ function App() {
       {/*<OpenBorrowVault />*/}
       {/*<h1>james riff experiment</h1>*/}
       {/*<JamesRiffExperiment />*/}
-      <h1>Flow</h1>
-      <OpenBorrowVault />
+      <appContext.Provider value={setupAppContext()}>
+        <h1>Flow</h1>
+        <OpenBorrowVault />
+      </appContext.Provider>
       {/*<h1>FLow debug</h1>*/}
       {/*<Flow<Type>*/}
       {/*  name="new flow"*/}

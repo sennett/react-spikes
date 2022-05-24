@@ -1,6 +1,7 @@
 import { IStep } from '../../Flow'
 import { useLoadingDots } from '../../hooks/useLoadingDots'
 import { useState } from 'react'
+import { createProxy$ } from '../proxyPipes'
 
 export type ExplanationProps = {
   walletAddress: string
@@ -14,10 +15,12 @@ export const Explanation: IStep<ExplanationProps> = {
 
     function createProxy() {
       setCreatingProxy(true)
-      setTimeout(() => {
-        props.updateState!({ proxyAddress: '0xProxyAddress' })
-        props.next!()
-      }, 3000)
+      createProxy$(props.walletAddress).subscribe({
+        next: (proxyAddress: string) => {
+          props.updateState!({ proxyAddress: proxyAddress })
+          props.next!()
+        },
+      })
     }
 
     if (!creatingProxy) {

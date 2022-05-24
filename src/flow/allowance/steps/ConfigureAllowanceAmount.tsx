@@ -1,8 +1,10 @@
 import { IStep } from '../../Flow'
 import { SyntheticEvent, useState } from 'react'
 import { useLoadingDots } from '../../hooks/useLoadingDots'
+import { createAllowance$ } from '../allowancePipes'
 
 export type ConfigureAllowanceAmountProps = {
+  walletAddress: string
   depositAmount?: number
   configuredAllowance?: number
 }
@@ -23,7 +25,16 @@ export const ConfigureAllowanceAmount: IStep<ConfigureAllowanceAmountProps> = {
       props.configuredAllowance >= props.depositAmount
 
     function setAllowance() {
-      setAllowanceRequestState('in progress')
+      if (props.configuredAllowance) {
+        setAllowanceRequestState('in progress')
+        createAllowance$(props.walletAddress, props.configuredAllowance).subscribe({
+          next: (allowance) => {
+            props.updateState({ configuredAllowance: allowance })
+            props.next!()
+          },
+        })
+      }
+
       setTimeout(() => props.next!(), 1000)
     }
 

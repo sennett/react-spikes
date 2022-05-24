@@ -59,6 +59,7 @@ export function Flow<S>(
 }
 
 function Hide(props: { children: ReactNode }) {
+  // style={{ visibility: hiddenIf() ? 'hidden' : 'visible', maxHeight: hiddenIf() ? 0 : 'initial' }}
   return <div style={{ display: 'none' }}>{props.children}</div>
 }
 
