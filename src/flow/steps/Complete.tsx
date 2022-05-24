@@ -1,11 +1,11 @@
-import { GenericStepProps, IStep } from '../Flow'
+import { IStep } from '../Flow'
 
 export type CompleteProps = {
   vaultId?: number
 }
 
 export const Complete: IStep<CompleteProps> = {
-  Component: (props: GenericStepProps<CompleteProps>) => {
+  Component: (props) => {
     function goToVault() {
       alert(`heading to vault #${props.vaultId}`)
     }

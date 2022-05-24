@@ -6,6 +6,10 @@ export type SimulateStepProps = {
   depositAmountUsd?: number
 }
 
+type SimulateStepProvidedState = {
+  depositAmount: number
+}
+
 export const SimulateStep: IStep<SimulateStepProps> = {
   Component: (props: GenericStepProps<SimulateStepProps>) => {
     return (
@@ -18,12 +22,13 @@ export const SimulateStep: IStep<SimulateStepProps> = {
         <input
           type="number"
           value={props.depositAmount || ''}
-          onChange={(event) =>
-            props.updateState({
-              ...props,
-              depositAmount: event.target.value ? parseFloat(event.target.value) : undefined,
+          onChange={(event) => {
+            const depositAmount = event.target.value ? parseFloat(event.target.value) : 0
+            props.updateState!({
+              depositAmount,
+              depositAmountUsd: depositAmount * props.ethPrice,
             })
-          }
+          }}
         />
         {props.depositAmountUsd && (
           <>

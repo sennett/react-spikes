@@ -1,15 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './App.css'
 import { OpenBorrowVault } from './flow/OpenBorrowVault'
-import { Flow, GenericStepProps } from './flow/Flow'
-
-type Step1Props = void
-
-// function Step1(props: GenericStepProps<Step1Props>) {
-//   return <button onClick={props.next}> n</button>
-// }
-
-// type Type = Step1Props & { one: string }
+import { appContext } from './flow/hooks/useAppContext'
+import { setupAppContext } from './flow/appContext'
 
 function App() {
   // const [s, ss] = useState<Type>({ one: 'hello' })
@@ -23,8 +16,10 @@ function App() {
       {/*<OpenBorrowVault />*/}
       {/*<h1>james riff experiment</h1>*/}
       {/*<JamesRiffExperiment />*/}
-      <h1>Flow</h1>
-      <OpenBorrowVault />
+      <appContext.Provider value={setupAppContext()}>
+        <h1>Flow</h1>
+        <OpenBorrowVault />
+      </appContext.Provider>
       {/*<h1>FLow debug</h1>*/}
       {/*<Flow<Type>*/}
       {/*  name="new flow"*/}

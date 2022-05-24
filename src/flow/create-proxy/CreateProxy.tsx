@@ -1,29 +1,29 @@
 import { Flow, GenericStepProps, ISkippableStep } from '../Flow'
-import { FC, useState } from 'react'
 import { Explanation, ExplanationProps } from './steps/Explanation'
-import { Creation, CreationProps } from './steps/Creation'
 import { Done, DoneProps } from './steps/Done'
+import { useEffect } from 'react'
+import { getProxy$ } from './proxyPipes'
 
-export type CreateProxyProps = ExplanationProps & CreationProps & DoneProps
+export type CreateProxyProps = ExplanationProps & DoneProps
+
+export type ProxyCreated = {
+  proxyAddress: string
+}
 
 export const CreateProxy: ISkippableStep<CreateProxyProps> = {
-  Component: (props) => {
-    const [viewState, setViewState] = useState<CreateProxyProps>(props)
+  Component: (props: GenericStepProps<CreateProxyProps>) => {
+    useEffect(() => {
+      const subscription = getProxy$(props.walletAddress).subscribe({
+        next: (proxyAddress: string | undefined) => {
+          props.updateState({ proxyAddress })
+        },
+      })
+      return () => subscription.unsubscribe()
+    }, [])
 
-    return (
-      <Flow<CreateProxyProps>
-        {...viewState}
-        name="proxy"
-        steps={[Explanation, Creation, Done]}
-        updateState={(newState) => {
-          setViewState((oldState) => ({ ...oldState, ...newState }))
-          props.updateState(newState)
-        }}
-      />
-    )
+    return <Flow<CreateProxyProps> {...props} name="proxy" steps={[Explanation, Done]} />
   },
   canSkip: (props: CreateProxyProps) => {
-    console.log('here')
     return !!props.proxyAddress
   },
 }

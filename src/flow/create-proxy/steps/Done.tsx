@@ -1,11 +1,11 @@
-import { GenericStepProps, IStep } from '../../Flow'
+import { IStep } from '../../Flow'
 
 export type DoneProps = {
   proxyAddress?: string
 }
 
 export const Done: IStep<DoneProps> = {
-  Component: (props: GenericStepProps<DoneProps>) => {
+  Component: (props) => {
     return (
       <>
         Proxy created

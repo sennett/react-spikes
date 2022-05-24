@@ -1,8 +1,10 @@
-import { GenericStepProps, IStep } from '../../Flow'
+import { IStep } from '../../Flow'
 import { SyntheticEvent, useState } from 'react'
 import { useLoadingDots } from '../../hooks/useLoadingDots'
+import { createAllowance$ } from '../allowancePipes'
 
 export type ConfigureAllowanceAmountProps = {
+  walletAddress: string
   depositAmount?: number
   configuredAllowance?: number
 }
@@ -10,7 +12,7 @@ export type ConfigureAllowanceAmountProps = {
 type AllowanceRequestState = 'not sent' | 'in progress' | 'done'
 
 export const ConfigureAllowanceAmount: IStep<ConfigureAllowanceAmountProps> = {
-  Component: (props: GenericStepProps<ConfigureAllowanceAmountProps>) => {
+  Component: (props) => {
     const [allowanceRequestState, setAllowanceRequestState] =
       useState<AllowanceRequestState>('not sent')
     const [selectedRadio, setSelectedRadio] = useState('custom')
@@ -23,7 +25,16 @@ export const ConfigureAllowanceAmount: IStep<ConfigureAllowanceAmountProps> = {
       props.configuredAllowance >= props.depositAmount
 
     function setAllowance() {
-      setAllowanceRequestState('in progress')
+      if (props.configuredAllowance) {
+        setAllowanceRequestState('in progress')
+        createAllowance$(props.walletAddress, props.configuredAllowance).subscribe({
+          next: (allowance) => {
+            props.updateState({ configuredAllowance: allowance })
+            props.next!()
+          },
+        })
+      }
+
       setTimeout(() => props.next!(), 1000)
     }
 
